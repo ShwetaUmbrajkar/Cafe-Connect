@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        #cart-content {
+            margin-top: 20px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .cart-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        .remove-btn {
+            background-color: #ff4c4c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .remove-btn:hover {
+            background-color: #e63939;
+        }
+
+        /* Notification Styles */
+        #notification {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .back-button {
+            display: inline-block;      /* Makes the link behave like a block element */
+            padding: 10px 20px;        /* Adds padding to make the button larger */
+            background-color: #113ff7; /* Button background color */
+            color: white;              /* Text color */
+            text-align: center;        /* Center text */
+            border-radius: 5px;       /* Rounds the corners */
+            text-decoration: none;     /* Removes underline from the link */
+            font-size: 16px;           /* Increases font size */
+            transition: background-color 0.3s ease; /* Adds a smooth transition for hover */
+        }
+
+        .back-button:hover {
+            background-color: #0e2db5; /* Darker color on hover */
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Your Cart</h1>
+        <a href="index.html" class="back-button">Back to Menu</a>
+    </header>
+
+    <section id="cart">
+        <h2>Items in your cart:</h2>
+        <div id="cart-content"></div>
+    </section>
+
+    <!-- Notification -->
+    <div id="notification">Item added to cart!</div>
+
+    <script>
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const cartContent = document.getElementById('cart-content');
+        const notification = document.getElementById('notification');
+
+        function updateCart() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            cartContent.innerHTML = '';
+            let totalPrice = 0;
+
+            if (cart.length === 0) {
+                cartContent.innerHTML = '<p>Your cart is empty!</p>';
+            } else {
+                cart.forEach((item, index) => {
+                    const itemDiv = document.createElement('div');
+                    //itemDiv.classList.add('cart-item');
+                    itemDiv.innerHTML = `
+                        <p>${item.name}</p>
+                        
+                        
+                        <button class="remove-btn" onclick="removeFromCart(${index})">Remove</button>`;
+
+                    cartContent.appendChild(itemDiv);
+                    totalPrice += parseFloat(item.price);
+                });
+                const totalDiv = document.createElement('div');
+                totalDiv.innerHTML = `<h3>Total Price: Rs. ${totalPrice.toFixed(2)}</h3>`;
+                cartContent.appendChild(totalDiv);
+            }
+        }
+        
+
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCart();
+        }
+
+        // Function to show notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            c//onsole.log('Notification:', message); // Debug log to check if notification is called
+            notification.textContent = message;
+            notification.style.display = 'block';  // Ensure the notification is shown
+            notification.style.opacity = '1';
+
+            // Hide the notification after 3 seconds
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.display = 'none'; // Hide after delay
+            }, 3000);
+        }
+
+        // function addToCart(item) {
+        //     const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        //     cart.push(item);
+        //     localStorage.setItem('cart', JSON.stringify(cart));
+        //     showNotification('Item added to cart!'); // Show notification when item is added
+        // }
+
+        function goToCart() {
+            document.getElementById('menu').style.display = 'none';
+            document.getElementById('cart').style.display = 'block';
+        }
+
+        // Initial cart display
+        updateCart();
+    </script>
+
+    <!-- Order -->
+    <section class="order" id="order">
+        <h1 class="heading">  <span>Check</span>Out</h1>
+
+        <div class="row">
+
+            <div class="image">
+                <img src="a hand holding a covered dish.png" alt="">
+            </div>
+
+            <form action="">
+                <div class="inputBox">
+                    <input type="text" placeholder="Name" required>
+                    <input type="email" placeholder="Email" required>
+                </div>
+
+                <div class="inputBox">
+                    <input type="tel" id="phone" name="phone" placeholder="Mobile Number" required>
+                    <input type="time" placeholder="Time" required>
+                </div>
+                <a href="order-slip.html" class="btn" onclick="goToCart()">Confirm Order</a>
+            </form>
+        </div>
+    </section>
+    
+</body>
+</html>

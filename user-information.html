@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>User Information</title>
+    <style>
+        body {
+            text-align: center;
+        }
+        .error {
+            color: red;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <h1>User Information</h1>
+    <form id="userInfoForm" class="user-info-form">
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" required>
+        </div>
+        <div class="form-group">
+            <label for="mobile">Mobile No:</label>
+            <input type="tel" id="mobile" required>
+            <div class="error" id="mobileError"></div>
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" required>
+            <div class="error" id="emailError"></div>
+        </div>
+        <div class="form-group">
+            <label for="timeSlot">Select Time Slot:</label>
+            <select id="timeSlot" required>
+                <option value="10:00 AM">10:00 AM</option>
+                <option value="11:00 AM">11:00 AM</option>
+                <option value="12:00 PM">12:00 PM</option>
+            </select>
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        document.getElementById('userInfoForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const mobile = document.getElementById('mobile').value;
+            const email = document.getElementById('email').value;
+            const timeSlot = document.getElementById('timeSlot').value;
+
+            // Validate mobile number
+            const mobileError = document.getElementById('mobileError');
+            if (mobile.length !== 10) {
+                mobileError.textContent = "Please enter a valid 10-digit mobile number.";
+                return;
+            } else if (mobile.length > 10) {
+                mobileError.textContent = "Mobile number cannot exceed 10 digits.";
+                return;
+            } else {
+                mobileError.textContent = "";
+            }
+
+            // Validate email format for Gmail
+            const emailError = document.getElementById('emailError');
+            const emailPattern = /^[a-zA-Z0-9._%+-]+@gmail\.com$/;
+            if (!emailPattern.test(email)) {
+                emailError.textContent = "Please enter a valid Gmail address.";
+                return;
+            } else {
+                emailError.textContent = "";
+            }
+
+            // Store user information in localStorage
+            localStorage.setItem('userInfo', JSON.stringify({ name, mobile, email, timeSlot }));
+
+            // Redirect to order slip page
+            window.location.href = 'order-slip.html';
+        });
+    </script>
+</body>
+</html>

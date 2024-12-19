@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Order Slip</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+
+        .order-slip {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #61b2ef;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .details, .items {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .items {
+            padding: 10px;
+            border: 1px dashed #ccc;
+            background-color: #fff;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #qrcode {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="order-slip">
+        <h2>Order Slip</h2>
+        <div class="details" id="orderDetails"></div>
+        <div class="items" id="orderedItems"></div>
+        <div id="totalPrice"></div>
+        <button id="confirmOrder">Confirm Order</button>
+        <div id="qrcode" style="margin-top: 20px;"></div>
+    </div>
+
+    <script>
+        const userInfo = JSON.parse(localStorage.getItem('userInfo'));
+        const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+
+        // Only show user info if it exists
+        if (userInfo) {
+            document.getElementById('orderDetails').innerHTML = `
+                <strong>User Information:</strong><br>
+                Name: ${userInfo.name}<br>
+                Mobile No: ${userInfo.mobile}<br>
+                Email: ${userInfo.email}<br>
+                Time Slot: ${userInfo.timeSlot}
+            `;
+        }
+
+        let totalPrice = 0;
+        const itemList = cartItems.map(item => {
+            totalPrice += parseFloat(item.price);
+            return `${item.name} - Rs. ${item.price}`;
+        });
+
+        document.getElementById('orderedItems').innerHTML = `
+            <strong>Items Ordered:</strong><br>
+            ${itemList.length > 0 ? itemList.join('<br>') : 'No items in cart.'}
+        `;
+
+        document.getElementById('totalPrice').innerHTML = `<strong>Total Price: Rs. ${totalPrice.toFixed(2)}</strong>`;
+
+        document.getElementById('confirmOrder').addEventListener('click', function() {
+            const orderNumber = Math.floor(Math.random() * 100000);
+            const qrText = `Your order No: ${orderNumber}`;
+
+            $('#qrcode').empty();
+            $('#qrcode').qrcode({
+                text: qrText,
+                width: 128,
+                height: 128
+            });
+
+            alert('Order confirmed!');
+            localStorage.clear();
+            // Optional redirection
+            // setTimeout(() => {
+            //     window.location.href = 'thank-you.html';
+            // }, 3000);
+        });
+    </script>
+</body>
+</html>
